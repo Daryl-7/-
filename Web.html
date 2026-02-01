@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Letter</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💌</text></svg>">
+  </head>
+  <body>
+    <div class="heart-container"></div>
+    <div class="confetti-container"></div>
+
+    <div class="letter">
+      <div class="paper">
+        <p class="hint">Click me 💌</p>
+        <div class="content question">
+          <h2>Will you be my <br>Valentine? 💘</h2>
+
+          <div class="choices">
+            <button class="yes">Yes 💖</button>
+            <button class="no">No 😟</button>
+          </div>
+        </div>
+
+        <!-- SUCCESS MESSAGE (hidden initially) -->
+        <div class="content success">
+          <h2 class="yippee">YIPPEEE! 💖</h2>
+          <p class="date-text">you owe me a date 😋</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUDIO ELEMENT -->
+    <audio id="song" src="ngalan-mo.mp3" preload="metadata"></audio>
+
+    <script>
+      window.onload = () => {
+        document.body.classList.add("loaded");
+      };
+
+      const letter = document.querySelector(".letter");
+      const paper = document.querySelector(".paper");
+      const heartContainer = document.querySelector(".heart-container");
+      const confettiContainer = document.querySelector(".confetti-container");
+      const yesButton = document.querySelector(".yes");
+      const noButton = document.querySelector(".no");
+      const song = document.getElementById("song");
+
+      let opened = false;
+      let answered = false;
+
+      letter.addEventListener("click", () => {
+        if (!opened && !answered) {
+          letter.classList.add("open");
+          opened = true;
+
+          song.play().catch(err => {
+            console.log("Audio autoplay blocked - user can play manually");
+          });
+        }
+      });
+
+      function burstHearts(x, y, count = 8) {
+        for (let i = 0; i < count; i++) {
+          const heart = document.createElement("span");
+          heart.className = "heart";
+          heart.textContent = "💗";
+
+          heart.style.left = x + Math.random() * 20 - 10 + "px";
+          heart.style.top = y + Math.random() * 20 - 10 + "px";
+
+          heartContainer.appendChild(heart);
+
+          setTimeout(() => heart.remove(), 1400);
+        }
+      }
+
+      function massiveCelebration() {
+        // Create hearts everywhere
+        for (let i = 0; i < 35; i++) {
+          setTimeout(() => {
+            const heart = document.createElement("span");
+            heart.className = "heart";
+            heart.textContent = Math.random() > 0.5 ? "💗" : "💖";
+
+            heart.style.left = Math.random() * window.innerWidth + "px";
+            heart.style.top = Math.random() * window.innerHeight + "px";
+
+            heartContainer.appendChild(heart);
+
+            setTimeout(() => heart.remove(), 1400);
+          }, i * 40);
+        }
+
+        // Create confetti
+        for (let i = 0; i < 50; i++) {
+          setTimeout(() => {
+            const confetti = document.createElement("span");
+            confetti.className = "confetti";
+            
+            const colors = ["#ff6b9d", "#c44569", "#f8b500", "#ffd93d", "#95e1d3"];
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            confetti.style.left = Math.random() * window.innerWidth + "px";
+            confetti.style.top = -10 + "px";
+
+            confettiContainer.appendChild(confetti);
+
+            setTimeout(() => confetti.remove(), 3000);
+          }, i * 30);
+        }
+      }
+
+      // "Yes" button - THE BIG MOMENT
+      yesButton.addEventListener("click", (e) => {
+        e.stopPropagation();
+        
+        if (answered) return;
+        answered = true;
+
+        // Massive celebration
+        massiveCelebration();
+
+        // Flip the paper to show success message
+        setTimeout(() => {
+          paper.classList.add("flip");
+        }, 300);
+      });
+
+      // "No" button runs away
+      noButton.addEventListener("mouseenter", () => {
+        if (answered) return;
+        const x = Math.random() * 480 - 60;
+        const y = Math.random() * 240 - 30;
+        noButton.style.transform = `translate(${x}px, ${y}px)`;
+      });
+
+      noButton.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (answered) return;
+        const x = Math.random() * 480 - 60;
+        const y = Math.random() * 240 - 30;
+        noButton.style.transform = `translate(${x}px, ${y}px)`;
+      });
+    </script>
+
+  </body>
+</html>
